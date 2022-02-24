@@ -8,6 +8,7 @@ from termcolor import colored
 WORD_LENGTH = 5
 FIVE_LETTER_WORD_API = 'https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt'
 DICTIONARY_API = 'https://api.dictionaryapi.dev/api/v2/entries/en'
+REQUEST_ATTEMPTS_LIMIT = 5
 
 CLUE_COLORS = {
     # correct letter & position
@@ -152,19 +153,37 @@ def format_meaning(word_meaning):
     formatted_meaning += colored(phonetic, PHONETIC_COLOR)
 
     for meaning in word_meaning.get('meanings', []):
-        formatted_meaning += '\n[' + colored(meaning['partOfSpeech'], PART_OF_SPEECH_COLOR) + ']\n'
-        definition = textwrap.fill(colored(meaning['definitions'][0]['definition'], DEFINITION_COLOR), 72)
-        definition = '\n'.join(['\t' + defn for defn in definition.split('\n')])
-        formatted_meaning += definition
+        formatted_meaning += '\n' + colored('[' + meaning['partOfSpeech'] + ']', PART_OF_SPEECH_COLOR)
+        for definition in meaning['definitions']:
+            formatted_definition = textwrap.fill(colored(definition['definition'], DEFINITION_COLOR), 72)
+            formatted_definition = formatted_definition.split('\n')
+            formatted_definition = ['\n  - ' + d if i == 0 else '    ' + d for i, d in enumerate(formatted_definition)]
+            formatted_definition = '\n'.join(formatted_definition)
+            formatted_meaning += formatted_definition
 
     formatted_meaning += '\n'
 
     return formatted_meaning
 
 if __name__ == '__main__':
-    words = get_words()
-    random_word = random.choice(words)
-    word_meaning = get_word_meaning(random_word)
+    request_attempts = 0
+    while True:
+        try:
+            words = get_words()
+            random_word = random.choice(words)
+            word_meaning = get_word_meaning(random_word)
+            break
+        except requests.exceptions.ConnectionError:
+            if request_attempts < REQUEST_ATTEMPTS_LIMIT:
+                print('Retrying, please check your internet connection')
+                request_attempts += 1
+            else:
+                raise requests.exceptions.ConnectionError('Please check your internet connection')
+        except KeyError:
+            if request_attempts < REQUEST_ATTEMPTS_LIMIT:
+                request_attempts += 1
+            else:
+                raise ValueError(f'Please check the validity of the API endpoint {DICTIONARY_API}')
 
     tordle_title = colorize_word_art(
         'TORDLE',
