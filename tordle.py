@@ -142,12 +142,17 @@ def get_word_meaning(word):
     return word_meaning
 
 def format_meaning(word_meaning):
-    formatted_meaning = colored(word_meaning['word'], WORD_COLOR)
+    formatted_meaning = colored(word_meaning.get('word', ''), WORD_COLOR)
+    phonetic = word_meaning.get('phonetic')
+    if phonetic is not None:
+        phonetic = '(' + phonetic + ')'
+    else:
+        phonetic = ''
     formatted_meaning += ' '
-    formatted_meaning += colored('(' + word_meaning['phonetic'] + ')', PHONETIC_COLOR)
+    formatted_meaning += colored(phonetic, PHONETIC_COLOR)
 
-    for meaning in word_meaning['meanings']:
-        formatted_meaning += '\n[' + colored(meaning['partOfSpeech'], PART_OF_SPEECH_COLOR) + ']'
+    for meaning in word_meaning.get('meanings', []):
+        formatted_meaning += '\n[' + colored(meaning['partOfSpeech'], PART_OF_SPEECH_COLOR) + ']\n'
         definition = textwrap.fill(colored(meaning['definitions'][0]['definition'], DEFINITION_COLOR), 72)
         definition = '\n'.join(['\t' + defn for defn in definition.split('\n')])
         formatted_meaning += definition
@@ -179,7 +184,7 @@ if __name__ == '__main__':
         print(colored(f'{attempts} attempts remaining', ATTEMPTS_COLOR))
         attempted_word = input(colored('Enter a 5-letter word: ', PROMPT_COLOR)).upper()
         if attempted_word not in words:
-            print(colored('Not in the word list, try again', ERROR_COLOR))
+            print(colored('Not in the word list, try again\n', ERROR_COLOR))
         else:
             clues, all_correct = get_clues(random_word, attempted_word)
             clue_colors = get_clue_colors(clues)
