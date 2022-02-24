@@ -38,5 +38,7 @@ python3 tordle.py
 
 ## Credits
 
+- [The Stanford GraphBase: A Platform for Combinatorial Computing](https://www-cs-faculty.stanford.edu/~knuth/sgb.html)
+- [Dictionary API](https://dictionaryapi.dev/)
 - Turtle ASCII Art: [Geoffrey Elliott](https://ascii.co.uk/art/turtle)
 - [ASCII Art Library for Python](https://github.com/sepandhaghighi/art)
