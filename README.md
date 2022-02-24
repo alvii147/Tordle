@@ -1,6 +1,6 @@
 # Tordle - Terminal Wordle
 
-*Tordle* is the terminal version of popular game [Wordle](https://www.nytimes.com/games/wordle/index.html).
+*Tordle* is the terminal-based clone of popular game [Wordle](https://www.nytimes.com/games/wordle/index.html).
 
 ## Demo
 
@@ -35,3 +35,8 @@ Run *Tordle*:
 ```bash
 python3 tordle.py
 ```
+
+## Credits
+
+- Turtle ASCII Art: [Geoffrey Elliott](https://ascii.co.uk/art/turtle)
+- [ASCII Art Library for Python](https://github.com/sepandhaghighi/art)
