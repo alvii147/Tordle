@@ -1,3 +1,4 @@
+import re
 import requests
 import random
 from collections import Counter
@@ -162,6 +163,7 @@ def format_meaning(word_meaning):
             formatted_meaning += formatted_definition
 
     formatted_meaning += '\n'
+    formatted_meaning = re.sub(r'[^\x00-\x7F]+', ' ', formatted_meaning)
 
     return formatted_meaning
 
